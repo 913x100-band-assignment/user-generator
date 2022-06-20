@@ -15,6 +15,8 @@ export const useUserGenerator = () => {
   const [userinfo, setUserinfo] = useState<UserProps | null>(null)
 
   const generate = () => {
+    setUserinfo(null)
+
     const user: UserProps = {
       id: `user${cuid()}`,
       username: faker.internet.userName(),
@@ -25,7 +27,15 @@ export const useUserGenerator = () => {
       joined_date: randomDate(new Date(2019, 0, 1), new Date()),
     }
 
-    setUserinfo(user)
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    }
+
+    fetch('https://kq51atsidi.execute-api.us-east-1.amazonaws.com/Prod/user/', requestOptions)
+      .then(resp => resp.json())
+      .then(resp => setUserinfo(resp))
   }
 
   return {
